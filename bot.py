@@ -142,9 +142,16 @@ def verify_key(message):
     user_id = message.chat.id
     key_entered = message.text.strip()
 
+    # Delete the message immediately so the key disappears from chat
+    try:
+        bot.delete_message(user_id, message.message_id)
+    except Exception:
+        pass
+
     if key_entered == SECRET_KEY:
         user_data[user_id]["key_verified"] = True
         user_data[user_id]["awaiting_key"] = False
+        bot.send_message(user_id, "✅ Key verified!")
         show_numbers(user_id)
     else:
         bot.send_message(
